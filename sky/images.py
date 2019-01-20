@@ -11,6 +11,9 @@ def general_ok_img(img_candidate, wrong_imgs):
         if 'src' not in img_candidate.attrib:
             return False
         link = img_candidate.attrib['src']
+        if 'data-src' not in img_candidate.attrib:
+            return False
+        link = img_candidate.attrib['data-src']
     else:
         if 'content' in img_candidate.attrib:
             link = img_candidate.attrib['content']
@@ -25,8 +28,8 @@ def general_ok_img(img_candidate, wrong_imgs):
     if len(link) > 1000:
         return False
     # if link does not start with "http", drop it
-    if not link.startswith('http'):
-        return False
+    #if not link.startswith('http'):
+    #    return False
     # if link attributes contain one of the wrong atts, drop it
     if any([any([w in img_candidate.attrib[a] for w in wrong_imgs])
             for a in img_candidate.attrib]):
@@ -53,6 +56,7 @@ def get_images(tree, wrong_atts=None):
     img_candidates += tree.xpath('//meta[contains(@property, "image")]')
     img_candidates += tree.xpath('//*[contains(@style, "background-image")]')
     leftover = []
+    
     for img_candidate in img_candidates:
         if general_ok_img(img_candidate, wrong_atts):
             if img_candidate.tag == 'img':

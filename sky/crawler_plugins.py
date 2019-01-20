@@ -193,6 +193,7 @@ class CrawlElasticSearchPlugin(CrawlPlugin):
 
     def __init__(self, project_name, server, plugin_name, cache):
         super(CrawlElasticSearchPlugin, self).__init__(project_name, server, plugin_name, cache)
+        #server = 'https://5bgygw52r4:637c8qay66@cj-test-9194042377.us-west-2.bonsaisearch.net'
         self.es = server
 
     def get_default_plugin(self):
@@ -216,7 +217,7 @@ class CrawlElasticSearchPlugin(CrawlPlugin):
         return res['hits']['hits']
 
     def get_seen_urls(self):
-        query = {"query": {"wildcard": {"url": "*{}*".format(self.plugin_name)}}, "fields": "url"}
+        query = {"query": {"wildcard": {"url": "*{}*".format(self.plugin_name)}}}
         res = self.es.search(body=query, doc_type='document',
                              index=self.project_name + "-crawler-documents")
         return set([x['fields']['url'][0] for x in res['hits']['hits']])

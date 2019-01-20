@@ -141,8 +141,8 @@ class Crawler:
 
     async def login(self):
         resp = await self.session.post(self.login_url, data=aiohttp.FormData(self.login_data))
-        LOGGER.info("login in to url %r", self.login_url)
-        print(resp.status)
+        #LOGGER.info("login in to url %r", self.login_url)
+        #print(resp.status)
         await resp.release()
 
     def handle_root_of_seeds(self):
@@ -157,8 +157,8 @@ class Crawler:
                     host = host.lower()
                     root_domains.add(lenient_host(host))
                 self.add_url(0, root)
-        if len(root_domains) > 1:
-            raise Exception("Multiple Domains")
+        #if len(root_domains) > 1:
+        #    raise Exception("Multiple Domains")
         return root_domains
 
     def host_okay(self, host):
@@ -223,7 +223,10 @@ class Crawler:
             encoding = pdict.get("charset", "utf-8")
 
             if content_type in ("text/html", "application/xml"):
+
                 text = await response.text()
+
+                #print ("FINALLY GETTING THIS ", len(text))
 
                 crawl_date = time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(time.time()))
                 current_url = str(response.url)
@@ -362,8 +365,9 @@ class Crawler:
         exception = None
         while tries < self.max_tries_per_url:
             try:
-                LOGGER.debug("GET url: " + url)
-                response = await asyncio.wait_for(self.session.get(url, allow_redirects=False), 20)
+                print("WATING...GET url: " + url)
+                response = await asyncio.wait_for(self.session.get(url, allow_redirects=False), 200)
+                
                 if tries > 1:
                     LOGGER.info("try %r for %r SUCCESS", tries, url)
                 break
@@ -475,6 +479,7 @@ class Crawler:
         self.q.put_nowait((prio, url, max_redirects_per_url))
 
     async def crawl(self):
+        print("CRAWLING ")
         """Run the crawler until all finished."""
         workers = [asyncio.Task(self.work(), loop=self.loop) for _ in range(self.max_workers)]
         self.t0 = time.time()
@@ -504,6 +509,8 @@ class NewsCrawler(Crawler):
         try:
             # just let the indexer save the files as normal and also create a Template
             url = url
+            #print ("CREATING TREE WITH ", len(html_code))
+
             tree = makeTree(html_code, self.scraper.domain)
             if self.templates_done < self.scraper.config["max_templates"]:
                 self.templates_done += 1

@@ -133,6 +133,7 @@ class Scraper:
         title = getRuleTitle(tree)
         # filter duplicate images by src
         ok_imgs = get_images(tree)
+        for p in ok_imgs: print (p.attrib)
         titleind = ()
         imginds = []
         contentinds = []
@@ -175,8 +176,10 @@ class Scraper:
                     if fscore(title_set, text_set) > 0.5:
                         titleind = (node, num)
                         break
+        
 
         if titleind:
+
             sortedimgs = sorted(imginds, key=lambda x: abs(x[1] - titleind[1]))
         else:
             sortedimgs = []
@@ -184,8 +187,13 @@ class Scraper:
         images = []
         for x in sortedimgs:
             val = None
-            if 'src' in x[0].attrib:
+            if 'src' in x[0].attrib and 'data:image' not in x[0].attrib['src']:
                 val = x[0].attrib['src']
+
+            if 'data-src' in x[0].attrib and 'data-srcset' in x[0].attrib:
+                tmp = x[0].attrib['data-srcset'].split(",")
+                res = [images.append(tmp_elem) for tmp_elem in tmp]
+
             elif 'content' in x[0].attrib:
                 val = x[0].attrib['content']
             elif 'style' in x[0].attrib:
@@ -259,18 +267,16 @@ class Scraper:
                  x.attrib['href'].startswith(self.domain) and
                  self.should_save(x.attrib['href'])]
 
-        money_amounts = money.find('\n'.join(body_content), 1000) + money.find(title, 1000)
+        #money_amounts = money.find('\n'.join(body_content), 1000) + money.find(title, 1000)
 
         data = {'title': title,
                 'body': body_content,
                 'images': images,
-                'publish_date': str(date),
                 'author': author,
                 'cleaned': cleaned_html,
                 'language': self.detected_language,
                 'url': url,
                 'domain': self.domain,
-                'money': money_amounts,
                 'summary': '',
                 'related': get_sorted_links(links, url)[:5]}
 

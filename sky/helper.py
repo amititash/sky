@@ -24,6 +24,7 @@ def view_url(url):
 
 
 def view_html(x):
+    #print ("view html is called with ",x)
     import time
     import webbrowser
     fname = '/tmp/' + str(hash(x)) + '.html'
@@ -62,7 +63,7 @@ def view_diff(obj1, obj2, url='', diffMethod=lxml.html.diff.htmldiff):
         if y.text is not None:
             color = 'lightgreen' if 'ins' in y.tag else 'red'
             pureDiff += '<div style="background-color:{};">{}</div>'.format(color, y.text)
-    print('From t1 to t2, {} insertions and {} deleted'.format(insCounts, delCounts))
+    #print('From t1 to t2, {} insertions and {} deleted'.format(insCounts, delCounts))
     diff = '<head><title>diff</title><base href="' + url
     diff += '" target="_blank"><style>ins{ background-color:lightgreen; } '
     diff += 'del{background-color:red;}</style></head>' + diffHtml
@@ -114,7 +115,11 @@ def makeTree(html, domain=None):
     ud = UnicodeDammit(html, is_html=True)
     # tree = lxml.html.fromstring(cleaner.clean_html(ud.unicode_markup),
     #                             base_url = extractDomain(url))
+
+    #print("HTML",lxml.html.fromstring(ud.unicode_markup))
     tree = lxml.html.fromstring(ud.unicode_markup)
+
+    img_candidates = tree.xpath('//img[string-length(@src) > 3]')
 
     if domain is not None:
         tree.make_links_absolute(domain)

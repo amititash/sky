@@ -12,7 +12,7 @@ try:
 except ImportError:
     msg = 'ZODB not properly installed and cannot be used as data backend.\n'
     msg += 'Use `pip3 install ZODB zodbpickle` to install, or use a different backend.'
-    print(msg)
+    #print(msg)
 
 
 class CrawlService():
