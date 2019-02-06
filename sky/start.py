@@ -5,9 +5,9 @@ Entry point for the indexer infrastrcuture when list of individual URLS to be ca
 import os
 import json
 import pika 
-
+import time
 # this dir needs to contain config files, one config file per url
-directory = '/Users/titashneogi/workspace/sky/sky/sky/tmp_config/'
+directory = '/Users/titashneogi/workspace/sky/sky/sky/new_config/'
 
 
 connection = pika.BlockingConnection(pika.URLParameters('amqp://titash:test123@54.175.53.47/paays_products_cj'))
@@ -28,16 +28,20 @@ def goCrawl(ch, method, properties, msg):
         try:
             json.dump(item, outfile)
             configname = item['sku']
-            command = "python3 c2.py "+configfilename+" "+configname+" &"
-            print("crawling...",command)
-            os.system(command)
+            #command = "python3 c2.py "+configfilename+" "+configname
+            #print("crawling...",command)
+            #os.system(command)
+            outfile.close()
+            time.sleep(2)
+            print("moving to next...")
+            
         except:
             print("Error with ", configfilename)
 
 #Execution starts from here 
 channel.basic_consume(goCrawl,
                       queue='crawl',
-                      no_ack=True)
+                      no_ack=False)
 
 print(' [*] Waiting for messages. To exit press CTRL+C')
 channel.start_consuming()

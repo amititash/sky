@@ -17,3 +17,13 @@ sky/gener
 dist/
 sky.egg-info/
 sky/legacy/theneeds-test/*
+tmp_config/*
+tmp_config
+data-crawl/*
+data-crawl
+*.sh
+
+sky/crawl-data/*
+sky/expedia_config/*
+sky/new_config/*
+sky/tour-radar-config/*

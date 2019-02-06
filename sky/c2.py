@@ -29,7 +29,7 @@ default.save_config(PRODUCTION_CRAWL_CONFIG)
 
 fullpath = sys.argv[1]
 configname = sys.argv[2]
-print("crawling...",fullpath)
+print("crawling...",configname)
 
 
 with open(fullpath, 'r') as f:

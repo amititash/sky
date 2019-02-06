@@ -110,8 +110,8 @@ class Crawler:
         self.login_data = {}
         self.login_url = None
         self.seen_urls = set()
-        user_agent = config["user_agent"] if "user_agent" in config else "SkyBot v0.1"
-        from_header = config["from"] if "from" in config else "youremail@domain.com"
+        user_agent = config["user_agent"] if "user_agent" in config else "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:64.0) Gecko/20100101 Firefox/64.0"
+        from_header = config["from"] if "from" in config else "user@webmaster.com"
         self.headers = {"User-Agent": user_agent, "From": from_header}
         for k, v in config.items():
             setattr(self, k, v)
@@ -367,6 +367,10 @@ class Crawler:
             try:
                 print("WATING...GET url: " + url)
                 response = await asyncio.wait_for(self.session.get(url, allow_redirects=False), 200)
+
+                print("\n new response is \n",response)
+
+                #time.sleep(100)
                 
                 if tries > 1:
                     LOGGER.info("try %r for %r SUCCESS", tries, url)
